@@ -11,6 +11,7 @@ public class Separator {
   Graph graph;
   XBitSet vertexSet;
   int size;
+  int misSize;
   ArrayList<Bag> incidentBags;
   boolean safe;
   boolean unsafe;
@@ -28,6 +29,8 @@ public class Separator {
     this(parent);
     this.vertexSet = vertexSet;
     size = vertexSet.cardinality();
+    misSize = MisCalculator.calculateMis(parent.graph, vertexSet);
+
   }
   
   public void addIncidentBag(Bag bag) {
@@ -37,8 +40,10 @@ public class Separator {
   public void removeVertex(int v) {
     if (vertexSet.get(v)) {
        size--;
+       vertexSet.clear(v);
+       misSize = MisCalculator.calculateMis(graph, vertexSet);
     }
-    vertexSet.clear(v);
+    else vertexSet.clear(v);
   }
   
   public void invert() {

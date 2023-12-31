@@ -8,11 +8,23 @@ import java.util.ArrayList;
 
 import java.util.Arrays;
 
+import agape.algos.MIS;
+import edu.uci.ics.jung.graph.SparseGraph;
+import edu.uci.ics.jung.graph.util.Pair;
+import org.apache.commons.collections15.Factory;
+
 public class Bag implements Comparable<Bag>{
   Bag parent;
+
+  SparseGraph<Integer, Integer> misGraph;
+  MIS<Integer, Integer> mis;
+
+
   XBitSet vertexSet;
   int size;
-  Graph graph;
+
+  int misSize;
+  tw.exact.Graph graph;
   int conv[];
   int inv[];
   ArrayList<Bag> nestedBags;
@@ -26,15 +38,19 @@ public class Bag implements Comparable<Bag>{
   
   SafeSeparator ss;
   
-  public Bag(Graph graph) {
-    this(null, graph.all);
+  public Bag(tw.exact.Graph graph) {
+    this(null, graph.all, graph);
     this.graph = graph;
+
  }
   
-  public Bag(Bag parent, XBitSet vertexSet) {
+  public Bag(Bag parent, XBitSet vertexSet, tw.exact.Graph graph) {
     this.parent = parent;
     this.vertexSet = vertexSet;
+
     size = vertexSet.cardinality();
+    misSize = MisCalculator.calculateMis(graph, vertexSet);
+
     incidentSeparators = new ArrayList<>();
   }
   
@@ -77,7 +93,7 @@ public class Bag implements Comparable<Bag>{
   }
   
   public Bag addNestedBag(XBitSet vertexSet) {
-    Bag bag = new Bag(this, vertexSet);
+    Bag bag = new Bag(this, vertexSet, graph);
     nestedBags.add(bag);
     return bag;
   }
@@ -93,7 +109,7 @@ public class Bag implements Comparable<Bag>{
   }
 
   private void makeLocalGraph() {
-    graph = new Graph(size);
+    graph = new tw.exact.Graph(size);
     conv = new int[parent.size];
     inv = new int[size];
     
@@ -147,7 +163,7 @@ public class Bag implements Comparable<Bag>{
 //    System.out.println("nestedBags = " + nestedBags);
 
     if (nestedBags == null) {
-      width = size - 1;
+      width = misSize;
       separatorWidth = 0;
       return;
     }
@@ -156,14 +172,14 @@ public class Bag implements Comparable<Bag>{
     separatorWidth = 0;
     
     for (Bag bag: nestedBags) {
-      if (bag.size - 1 > width) {
-        width = bag.size - 1;
+      if (bag.misSize > width) {
+        width = bag.misSize;
       }
     }
 
     for (Separator separator: separators) {
-      if (separator.size > separatorWidth) {
-        separatorWidth = separator.size;
+      if (separator.misSize > separatorWidth) {
+        separatorWidth = separator.misSize;
       }
     }
     
@@ -344,7 +360,7 @@ public class Bag implements Comparable<Bag>{
           for (Bag toPack: bagsToPack) {
             vertexSet.or(toPack.vertexSet);
           }
-          Bag packed = new Bag(this, vertexSet);
+          Bag packed = new Bag(this, vertexSet, graph);
           packed.initializeForDecomposition();
           packed.nestedBags = bagsToPack;
           for (Bag toPack: bagsToPack) {

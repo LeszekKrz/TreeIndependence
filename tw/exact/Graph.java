@@ -166,6 +166,10 @@ public class Graph {
       int x = inv[v];
       for (int i = 0; i < g.degree[x]; i++) {
         int y = g.neighbor[x][i];
+        if (y == 18)
+        {
+          int a = 5;
+        }
         int u = conv[y];
         if (u >= 0) {
             addEdge(u,  v);
@@ -341,6 +345,8 @@ public class Graph {
     return null;
   }
 
+
+
   /**
    * Read a graph from the specified input stream in {@code gr} format and
    * return the resulting {@code Graph} object.
@@ -386,6 +392,70 @@ public class Graph {
 
     } catch (FileNotFoundException e) {
       e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  public static Graph readGraph6(InputStream is) {
+    try {
+      BufferedReader reader = new BufferedReader(
+              new InputStreamReader(is));
+      String s;
+      char c;
+      int n = 0;
+      int index = 0;
+      int edgeCount = 0;
+      Graph g = null;
+      if ((s = reader.readLine()) != null) {
+        c = s.charAt(index);
+        if (c != 126) { // 0 <= n <= 62
+          n = c - 63;
+        } else {
+          c = s.charAt(++index);
+          if (c != 126) { //63 <= n <= 258047
+            for (int i = 0; i < 3; i++) {
+              n += c - 63;
+              if (i != 2) {
+                n <<= 6;
+                c = s.charAt(++index);
+              }
+            }
+          } else { // 258048 <= n <= 68719476735
+            for (int i = 0; i < 6; i++) {
+              c = s.charAt(++index);
+              n += c - 63;
+              if (i != 5) n <<= 6;
+            }
+          }
+        }
+        g = new Graph(n);
+
+        int mask = 1 << 7;
+        int bits;
+        int i = 0;
+        int j = 1;
+        index++;
+        while (index < s.length()) {
+          c = s.charAt(index++);
+          bits = (c - 63) << 2;
+          for (int k = 0; k < 6; k++) {
+            if ((bits & mask) != 0) {
+              g.addEdge(i, j);
+            }
+            bits <<= 1;
+            i++;
+            if (i == j) {
+              j++;
+              i = 0;
+            }
+
+          }
+        }
+      }
+      while ((s = reader.readLine()) != null) ;
+      return g;
     } catch (IOException e) {
       e.printStackTrace();
     }

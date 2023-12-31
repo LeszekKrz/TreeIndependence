@@ -19,6 +19,11 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
+import agape.algos.MIS;
+import edu.uci.ics.jung.graph.util.Pair;
+import org.apache.commons.collections15.Factory;
+import edu.uci.ics.jung.graph.SparseGraph;
+
 public class MainDecomposer {
   private static boolean VERBOSE = false;
 //  private static boolean VERBOSE = true;
@@ -163,8 +168,9 @@ public class MainDecomposer {
   }
 
   public static void main(String[] args) {
-    Graph g = Graph.readGraph(System.in);
+    Graph g = Graph.readGraph6(System.in);
     TreeDecomposition td = decompose(g);
     td.writeTo(System.out);
+    System.out.println("Tree indpendence = " + (td.width));
   }
 }
