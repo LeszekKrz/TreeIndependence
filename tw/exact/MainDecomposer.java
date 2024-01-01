@@ -166,12 +166,12 @@ public class MainDecomposer {
   }
 
   public static void main(String[] args) {
-    //Graph g = Graph.readGraph6(System.in);
+    Graph g = Graph.readGraph6(System.in);
     //String graphString = "";
-    String graphString = "]}~vfbNrvw^_n~b~P~dfzk~ZBNeE^Dx_}{o]^~~y^{~H~r{[N~w[N~wNw^|z}F~]N~Xzo~|fn?";
+    //String graphString = "]}~vfbNrvw^_n~b~P~dfzk~ZBNeE^Dx_}{o]^~~y^{~H~r{[N~w[N~wNw^|z}F~]N~Xzo~|fn?";
 
     long start = System.currentTimeMillis();
-    Graph g = Graph.readGraph6(new ByteArrayInputStream(graphString.getBytes(Charset.forName("UTF-8"))));
+    //Graph g = Graph.readGraph6(new ByteArrayInputStream(graphString.getBytes(Charset.forName("UTF-8"))));
     TreeDecomposition td = decompose(g);
     long finish = System.currentTimeMillis();
     td.writeTo(System.out);
