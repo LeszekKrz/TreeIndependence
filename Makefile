@@ -1,10 +1,7 @@
-all:	exact heuristic
+all:	exact
 
 exact:
-	javac tw/exact/*.java
-
-heuristic:
-	javac tw/heuristic/*.java
+	javac -d out/ -cp "Libs/*" tw/exact/*.java
 
 clean: 
 	rm tw/*/*.class
