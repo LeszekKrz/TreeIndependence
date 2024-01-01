@@ -4,13 +4,9 @@
 
 package tw.exact;
 
-import java.io.File;
+import java.io.*;
 
 
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
@@ -23,6 +19,8 @@ import agape.algos.MIS;
 import edu.uci.ics.jung.graph.util.Pair;
 import org.apache.commons.collections15.Factory;
 import edu.uci.ics.jung.graph.SparseGraph;
+
+import java.nio.charset.Charset;
 
 public class MainDecomposer {
   private static boolean VERBOSE = false;
@@ -168,9 +166,16 @@ public class MainDecomposer {
   }
 
   public static void main(String[] args) {
-    Graph g = Graph.readGraph6(System.in);
+    //Graph g = Graph.readGraph6(System.in);
+    //String graphString = "";
+    String graphString = "]}~vfbNrvw^_n~b~P~dfzk~ZBNeE^Dx_}{o]^~~y^{~H~r{[N~w[N~wNw^|z}F~]N~Xzo~|fn?";
+
+    long start = System.currentTimeMillis();
+    Graph g = Graph.readGraph6(new ByteArrayInputStream(graphString.getBytes(Charset.forName("UTF-8"))));
     TreeDecomposition td = decompose(g);
+    long finish = System.currentTimeMillis();
     td.writeTo(System.out);
-    System.out.println("Tree indpendence = " + (td.width));
+    System.out.println("Tree indpendence = " + td.width);
+    System.out.println("Time: " + (finish-start));
   }
 }
